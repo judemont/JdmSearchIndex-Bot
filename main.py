@@ -29,7 +29,7 @@ def handlePages(URL, conn):
 conn = connection.newConnection(conf.SQL_CREATE_TABLE_QUERY)
 lastVisitedLink = lastVisitedLink.getLastVisitedUrl(conn)
 if not lastVisitedLink:
-    urlToVisit = "https://example.com"
+    urlToVisit = "https://google.com"
 else:
     urlToVisit = lastVisitedLink
 
