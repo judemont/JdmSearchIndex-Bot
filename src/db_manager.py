@@ -1,5 +1,7 @@
 import sqlite3
 
+from src.page_scraper import PageData
+
 class DbManager:
     INSERT_DATA_SQL = """
         INSERT INTO pages (URL, title, description, text, domain, IP) 
@@ -14,13 +16,13 @@ class DbManager:
     def get_last_visited_url(self):
         last_url = self.cursor.execute("SELECT URL FROM pages ORDER BY ID DESC LIMIT 1").fetchone()
         
-        return last_url if last_url else False
+        return last_url[0] if last_url else False
 
     def is_link_visited(self, url):
         # modified behavior: not not removed
         return self.cursor.execute("SELECT URL FROM pages WHERE URL = ?", (url,)).fetchone()
     
-    def save_page_data(self, url, title, description, text, domain, ip):
-        if not self.is_link_visited(url):
-            self.cursor.execute(self.INSERT_DATA_SQL, (url, title, description, text, domain, ip))
+    def save_page_data(self, pdata: PageData):
+        if not self.is_link_visited(pdata.url):
+            self.cursor.execute(self.INSERT_DATA_SQL, (pdata.url, pdata.title, pdata.description, pdata.text, pdata.domain, pdata.ip))
             self.connection.commit()

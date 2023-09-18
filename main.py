@@ -1,23 +1,21 @@
-from src.web import pageContent as pContent, pageSource, pageLinks, urlDomain, domainIp, urlCleaner
-from db_manager import DbManager
+from src.page_scraper import PageScraper
+from src.db_manager import DbManager
+
 import _config as conf
 
 def handlePages(url, db_manager: DbManager):
     try:
-        cleanedUrl = urlCleaner.cleanUpUrl(url)
-        print(cleanedUrl)
-        page = pageSource.getPageSource(cleanedUrl, conf.HEADERS)
-        pageContent = pContent.getPageContent(page, conf.MAX_PAGE_TEXT_LENGTH)
-        domain = urlDomain.getUrlDomain(cleanedUrl)
-        IP = domainIp.getIp(domain)
+        page_scrape = PageScraper(url, conf.HEADERS, conf.MAX_PAGE_TEXT_LENGTH).scrape_sync()
+        
+        print(page_scrape.url)
+        
+        db_manager.save_page_data(page_scrape.get_page_data())
 
-        db_manager.save_page_data(cleanedUrl, pageContent["title"], pageContent["description"], pageContent["text"], domain, IP)
-
-        pageURLs = pageLinks.getPageLinks(page)
-
-        for pageURL in pageURLs:
+        page_URLs = page_scrape.get_page_links()
+        for pageURL in page_URLs:
             if not db_manager.is_link_visited(pageURL):
                 handlePages(pageURL, db_manager)
+        
     except Exception as err:
         print(err)
 
