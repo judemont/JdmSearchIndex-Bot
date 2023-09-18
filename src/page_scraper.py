@@ -21,14 +21,8 @@ class PageScraper:
         self.headers = headers
         self.max_page_text_length = max_page_text_length
     
-    def scrape_sync(self):
+    def scrape(self):
         self._download_page_content()
-        self._grab_url_domain()
-        self._grab_ip()
-        return self
-    
-    async def scrape_async(self):
-        await self._download_page_content_async()
         self._grab_url_domain()
         self._grab_ip()
         return self
@@ -36,15 +30,6 @@ class PageScraper:
     def _process_response(self, response: httpx.Response):
         self.content = response.content
         self.soup = BeautifulSoup(response.content, "html.parser")
-
-    async def _download_page_content_async(self):
-        # normal, get only page:
-        self._process_response(await httpx.AsyncClient().get(self.url, headers=self.headers, follow_redirects=True))
-
-        # below: parse page + ip in a single request (gets v6, bad)
-        # async with httpx.AsyncClient().stream("GET", self.url) as response:
-        #     self.response = response
-        #     self.ip = response.extensions["network_stream"].get_extra_info("server_addr")[0]
 
     def _download_page_content(self):
         self._process_response(httpx.get(self.url, headers=self.headers, follow_redirects=True))
@@ -55,7 +40,7 @@ class PageScraper:
     def _grab_url_domain(self):
         self.domain = urlparse(self.url).netloc
 
-    def get_page_links(self):
+    def get_outlinks(self):
         links = self.soup.find_all('a', href=True)
         URLs = []
         for link in links:
