@@ -7,14 +7,14 @@ import _config as conf
 
 def handlePages(URL, conn):
     try:
-        URL = urlCleaner.cleanUpUrl(URL)
-        print(URL)
-        page = pageSource.getPageSource(URL)
+        cleanedUrl = urlCleaner.cleanUpUrl(URL)
+        print(cleanedUrl)
+        page = pageSource.getPageSource(cleanedUrl)
         pageContent = pContent.getPageContent(page, conf.MAX_PAGE_TEXT_LENGTH)
-        domain = urlDomain.getUrlDomain(URL)
+        domain = urlDomain.getUrlDomain(cleanedUrl)
         IP = domainIp.getIp(domain)
 
-        saveData.savePageData(URL, pageContent["title"], pageContent["description"], pageContent["text"], domain, IP, conn)
+        saveData.savePageData(cleanedUrl, pageContent["title"], pageContent["description"], pageContent["text"], domain, IP, conn)
 
         pageURLs = pageLinks.getPageLinks(page)
 
