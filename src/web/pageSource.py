@@ -1,5 +1,5 @@
 import requests
 
-def getPageSource(URL):
-    page = requests.get(URL)
+def getPageSource(URL, HEADERS):
+    page = requests.get(URL, headers=HEADERS)
     return page

@@ -9,7 +9,7 @@ def handlePages(URL, conn):
     try:
         cleanedUrl = urlCleaner.cleanUpUrl(URL)
         print(cleanedUrl)
-        page = pageSource.getPageSource(cleanedUrl)
+        page = pageSource.getPageSource(cleanedUrl, conf.HEADERS)
         pageContent = pContent.getPageContent(page, conf.MAX_PAGE_TEXT_LENGTH)
         domain = urlDomain.getUrlDomain(cleanedUrl)
         IP = domainIp.getIp(domain)
@@ -29,7 +29,7 @@ def handlePages(URL, conn):
 conn = connection.newConnection(conf.SQL_CREATE_TABLE_QUERY)
 lastVisitedLink = lastVisitedLink.getLastVisitedUrl(conn)
 if not lastVisitedLink:
-    urlToVisit = "https://rmbi.ch/jdm"
+    urlToVisit = "https://example.com"
 else:
     urlToVisit = lastVisitedLink
 
