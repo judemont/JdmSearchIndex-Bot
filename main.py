@@ -1,4 +1,4 @@
-from src.web import pageContent as pContent, pageSource, pageLinks, urlDomain, domainIp
+from src.web import pageContent as pContent, pageSource, pageLinks, urlDomain, domainIp, urlCleaner
 from src.db import connection, saveData, linkVisited, lastVisitedLink
 import _config as conf
 
@@ -7,8 +7,8 @@ import _config as conf
 
 def handlePages(URL, conn):
     try:
+        URL = urlCleaner.cleanUpUrl(URL)
         print(URL)
-
         page = pageSource.getPageSource(URL)
         pageContent = pContent.getPageContent(page, conf.MAX_PAGE_TEXT_LENGTH)
         domain = urlDomain.getUrlDomain(URL)
