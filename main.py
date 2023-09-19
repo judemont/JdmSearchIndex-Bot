@@ -18,6 +18,9 @@ def handlePages(url, db_manager: DbManager):
         
     except Exception as err:
         print(err)
+    except RecursionError as err:
+        print(err)
+        exit();
 
 db_manager = DbManager(conf.SQL_CREATE_TABLE_QUERY)
 
