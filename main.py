@@ -1,36 +1,28 @@
-from src.web import pageContent as pContent, pageSource, pageLinks, urlDomain, domainIp, urlCleaner
-from src.db import connection, saveData, linkVisited, lastVisitedLink
+from src.page_scraper import PageScraper
+from src.db_manager import DbManager
+
 import _config as conf
 
-
-
-
-def handlePages(URL, conn):
+def handlePages(url, db_manager: DbManager):
     try:
-        cleanedUrl = urlCleaner.cleanUpUrl(URL)
-        print(cleanedUrl)
-        page = pageSource.getPageSource(cleanedUrl, conf.HEADERS)
-        pageContent = pContent.getPageContent(page, conf.MAX_PAGE_TEXT_LENGTH)
-        domain = urlDomain.getUrlDomain(cleanedUrl)
-        IP = domainIp.getIp(domain)
+        page_scrape = PageScraper(url, conf.HEADERS, conf.MAX_PAGE_TEXT_LENGTH).scrape()
+        
+        print(page_scrape.url)
+        
+        db_manager.save_page_data(page_scrape.get_page_data())
 
-        saveData.savePageData(cleanedUrl, pageContent["title"], pageContent["description"], pageContent["text"], domain, IP, conn)
-
-        pageURLs = pageLinks.getPageLinks(page)
-
-        for pageURL in pageURLs:
-            if not linkVisited.isLinkVisited(pageURL, conn):
-                handlePages(pageURL, conn)
+        page_URLs = page_scrape.get_outlinks()
+        for pageURL in page_URLs:
+            if not db_manager.is_link_visited(pageURL):
+                handlePages(pageURL, db_manager)
+        
     except Exception as err:
         print(err)
 
+db_manager = DbManager(conf.SQL_CREATE_TABLE_QUERY)
 
+last_visited_link = db_manager.get_last_visited_url()
 
-conn = connection.newConnection(conf.SQL_CREATE_TABLE_QUERY)
-lastVisitedLink = lastVisitedLink.getLastVisitedUrl(conn)
-if not lastVisitedLink:
-    urlToVisit = conf.BASE_URL
-else:
-    urlToVisit = lastVisitedLink
+url_to_visit = last_visited_link if last_visited_link else conf.BASE_URL
 
-handlePages(urlToVisit, conn)
+handlePages(url_to_visit, db_manager)

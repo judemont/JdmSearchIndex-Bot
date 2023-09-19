@@ -1,7 +1,6 @@
 from urllib.parse import urlparse, urlunparse
 
-def cleanUpUrl(url):
-
+def cleanup_url(url):
     parsed_url = urlparse(url)
 
     netloc = parsed_url.netloc.lstrip("www.")
