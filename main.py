@@ -23,6 +23,6 @@ db_manager = DbManager(conf.SQL_CREATE_TABLE_QUERY)
 
 last_visited_link = db_manager.get_last_visited_url()
 
-url_to_visit = "https://support.google.com/communities/answer/7425194?sjid=11153138740194315581-EU" if last_visited_link else conf.BASE_URL
+url_to_visit = last_visited_link if last_visited_link else conf.BASE_URL
 
 handlePages(url_to_visit, db_manager)
