@@ -3,6 +3,7 @@ MAX_PAGE_TEXT_LENGTH = 500*1000
 SQL_CREATE_TABLE_QUERY = f"""
 CREATE TABLE IF NOT EXISTS pages (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp INTEGER,
     URL varchar(2000),
     title varchar(255),
     description varchar(255),
