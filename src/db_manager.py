@@ -6,8 +6,8 @@ from src.page_scraper import PageData
 
 class DbManager:
     INSERT_DATA_SQL = """
-        INSERT INTO pages (timestamp, URL, title, description, text, domain, IP) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO pages (timestamp, URL, title, text, domain, IP) 
+        VALUES (?, ?, ?, ?, ?, ?)
     """
 
     def __init__(self, sql_create_table_query: str, filename: str = "data.db") -> None:
@@ -27,5 +27,5 @@ class DbManager:
     def save_page_data(self, pdata: PageData):
         if not self.is_link_visited(pdata.url):
             timestamp = math.floor(time.time())
-            self.cursor.execute(self.INSERT_DATA_SQL, (timestamp, pdata.url, pdata.title, pdata.description, pdata.text, pdata.domain, pdata.ip))
+            self.cursor.execute(self.INSERT_DATA_SQL, (timestamp, pdata.url, pdata.title, pdata.text, pdata.domain, pdata.ip))
             self.connection.commit()

@@ -10,7 +10,6 @@ from src.utils import cleanup_url
 class PageData:
     url: str
     title: str
-    description: str
     text: str
     domain: str
     ip: str
@@ -52,9 +51,6 @@ class PageScraper:
     
     def get_page_data(self):
         title = self.soup.find("title")
-        description = self.soup.find("meta")
-
-        description = description.text if description else ""
         title = title.text if title else ""
 
         page_text = self.soup.get_text(separator="", strip=True)
@@ -62,7 +58,6 @@ class PageScraper:
         return PageData(
             self.url,
             title,
-            description,
             page_text,
             self.domain,
             self.ip
