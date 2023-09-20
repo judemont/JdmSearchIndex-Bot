@@ -15,12 +15,12 @@ def handlePages(url, db_manager: DbManager):
         for pageURL in page_URLs:
             if not db_manager.is_link_visited(pageURL):
                 handlePages(pageURL, db_manager)
-        
-    except Exception as err:
-        print(err)
     except RecursionError as err:
         print(err)
         exit();
+    except Exception as err:
+        print(err)
+
 
 db_manager = DbManager(conf.SQL_CREATE_TABLE_QUERY)
 
