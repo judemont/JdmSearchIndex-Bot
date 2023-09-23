@@ -10,7 +10,7 @@ class DataManager:
         postData = {"url": pdata.url, "title": pdata.title, "text": pdata.text, "domain": pdata.domain, "ip": pdata.ip}
         postUrl = self.API_BASE_URL + "save_page_data.php"
         responseJson = requests.post(postUrl, json = postData)
-        return False
+
     
     def is_link_visited(self, url:str):
         postData = {"link": url}
