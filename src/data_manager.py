@@ -16,6 +16,6 @@ class DataManager:
         postData = {"link": url}
         postUrl = self.API_BASE_URL + "save_page_data.php"
         responseJson = requests.post(postUrl, json = postData)
-        # response = json.loads(responseJson)
-        # return response["is_link_visited"]
+        response = json.loads(responseJson)
+        return response["is_link_visited"]
         return False
